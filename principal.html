@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Texto al Backend</title>
+</head>
+<body>
+    <h1>Enviar Texto al Backend</h1>
+    
+    <form id="textForm">
+        <label for="textInput">Ingrese un texto:</label><br>
+        <input type="text" id="textInput" name="textInput"><br><br>
+        <button type="submit">Enviar</button>
+    </form>
+    
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('textForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita el envío del formulario por defecto
+
+            // Obtener el texto ingresado por el usuario
+            var text = document.getElementById('textInput').value;
+
+            // Realizar la solicitud POST al backend
+            fetch('/guardarTexto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Manejar la respuesta del backend
+                document.getElementById('response').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        });
+    </script>
+</body>
+</html>
