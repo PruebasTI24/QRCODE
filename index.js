@@ -1,5 +1,5 @@
 /*var QRCode = require('qrcode')
-/*var canvas = document.getElementById('canvas')
+var canvas = document.getElementById('canvas')
 
 QRCode.toCanvas(canvas, 'sample text', function (error) {
   if (error) console.error(error)
@@ -10,7 +10,7 @@ QRCode.toString('Codigo QR Pruebas', {type:'terminal'}, function (error, url){
     console.log(url)
 })
 */
-
+const qrcode = require('qrcode-base64');
 const express = require('express')
 const app = express()
 const port = 3000
@@ -31,7 +31,15 @@ app.get('/', function(req, res) {
 app.post('/guardarTexto', function(req, res) {
   const texto = req.body.text; 
   console.log('Texto recibido:', texto); 
-  res.json({ message: 'Texto recibido correctamente' });
+
+  const url = qrcode.drawImg(texto, {
+    typeNumber: 4,
+    errorCorrectLevel: 'M',
+    size: 500
+  })
+  res.json({ message: 'Texto recibido correctamente', url });
+
+
 });
 
 

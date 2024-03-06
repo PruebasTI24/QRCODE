@@ -39,7 +39,11 @@
             })
             .then(data => {
                 // Manejar la respuesta del backend
-                document.getElementById('response').innerText = data.message;
+                var img = document.createElement("img");
+                img.src = data.url;
+                var src = document.getElementById("response");
+                src.appendChild(img);
+                //document.getElementById('response').innerText = data.message;
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
