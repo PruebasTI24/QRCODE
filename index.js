@@ -15,6 +15,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 const path = require('path');
+const { Console } = require('console');
 /*const e = require('express');
 /*app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -29,17 +30,25 @@ app.get('/', function(req, res) {
   });
 
 app.post('/guardarTexto', function(req, res) {
-  const texto = req.body.text; 
-  console.log('Texto recibido:', texto); 
+  const texto = req.body.text;
+  const pass = req.body.password; 
+  console.log('Texto user:', texto); 
+  console.log('Texto password: ', pass);
 
   const url = qrcode.drawImg(texto, {
     typeNumber: 4,
     errorCorrectLevel: 'M',
-    size: 500
+    size: 200
   })
-  res.json({ message: 'Texto recibido correctamente', url });
+  
 
+  const psw = qrcode.drawImg(pass, {
+    typeNumber: 4,
+    errorCorrectLevel: 'M',
+    size: 200
+  })
 
+  res.json({ message: 'Texto recibido correctamente del passw', psw, url});
 });
 
 
@@ -47,5 +56,4 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-
-
+//en la consola del navegador tambien me esta guardando con espacios

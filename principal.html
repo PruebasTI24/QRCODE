@@ -9,19 +9,41 @@
     <h1>Enviar Texto al Backend</h1>
     
     <form id="textForm">
-        <label for="textInput">Ingrese un texto:</label><br>
+        <label for="textInput">Usuario</label><br>
         <input type="text" id="textInput" name="textInput"><br><br>
+        <label for="passwordInput">Contraseña</label><br>
+        <input type="password" id="passwordInput" name="passwordInput"><br><br>
         <button type="submit">Enviar</button>
+        <br><br><br>
+
+
     </form>
     
     <div id="response"></div>
 
     <script>
+        function renderImage(data) {
+            var img = document.createElement("img");
+            img.src = data.url;
+            var src = document.getElementById("response");
+            src.appendChild(img);
+        }
         document.getElementById('textForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Evita el envío del formulario por defecto
 
             // Obtener el texto ingresado por el usuario
             var text = document.getElementById('textInput').value;
+            text = text.trim();
+            var text = document.getElementById('textInput').value.replace(/\s/g, '');
+            var password = document.getElementById('passwordInput').value.replace(/\s/g, '');
+
+            console.log('Texto user:', text);
+            console.log('Texto password:', password);
+
+            if (text === '' || password === '') {
+                alert('Por favor, ingrese un texto válido.');
+                return; // Evitar el envío del formulario si el texto está vacío
+            }
 
             // Realizar la solicitud POST al backend
             fetch('/guardarTexto', {
@@ -29,7 +51,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ text: text })
+                body: JSON.stringify({ text: text , password: password})
             })
             .then(response => {
                 if (!response.ok) {
@@ -39,10 +61,12 @@
             })
             .then(data => {
                 // Manejar la respuesta del backend
-                var img = document.createElement("img");
+               /* var img = document.createElement("img");
                 img.src = data.url;
                 var src = document.getElementById("response");
-                src.appendChild(img);
+                src.appendChild(img);*/
+                renderImage(data.url);
+                renderImage(data.psw);
                 //document.getElementById('response').innerText = data.message;
             })
             .catch(error => {
