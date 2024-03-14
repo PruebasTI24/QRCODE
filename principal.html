@@ -4,24 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enviar Texto al Backend</title>
+    <link  href="/estilos.css">
 </head>
-<body>
-    <h1>Enviar Texto al Backend</h1>
-    
+<body id="body" style="text-align: center;">
+    <h1>Generador de QR Alico DATAWAREHOUSE</h1>
     <form id="textForm">
-        <label for="textInput">Ingrese un texto:</label><br>
+        <label for="textInput">Usuario</label><br>
         <input type="text" id="textInput" name="textInput"><br><br>
-        <button type="submit">Enviar</button>
+        <label for="passwordInput">Contraseña</label><br>
+        <input type="password" id="passwordInput" name="passwordInput"><br><br>
+        <button type="submit" style="background-color: rgb(114, 112, 211);">Enviar</button>
+        <br><br><br>
     </form>
     
-    <div id="response"></div>
-
+    <div id="response">
+        <div class="qr-container" style="margin: right 20px;">
+            <label style="margin-right: 80px;" >Usuario</label>
+           
+            <label style="margin-left: 80px;">Contraseña</label>
+        </div>
     <script>
+        function renderImage(url,psw,labelText) {
+            var imguser = document.createElement("img");
+            imguser.src = url;
+            var imgpsw = document.createElement("img");
+            imgpsw.src = psw;
+
+            var label = document.createElement("label");
+            label.textContent = labelText;
+
+            var container = document.createElement("div");
+            container.classList.add('qr-container');
+            container.appendChild(label);
+            container.appendChild(imguser);
+            container.appendChild(imgpsw);
+        
+            var src = document.getElementById("response");
+            src.appendChild(container);
+
+            container.addEventListener("click", function() {
+                src.removeChild(container);
+            });
+        }
+
         document.getElementById('textForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Evita el envío del formulario por defecto
 
             // Obtener el texto ingresado por el usuario
-            var text = document.getElementById('textInput').value;
+            var text = document.getElementById('textInput').value.replace(/\s/g, '');
+            text = text.trim();
+            var password = document.getElementById('passwordInput').value.replace(/\s/g, '');
+            password = password.trim();
+
+            console.log('Texto user:', text);
+            console.log('Texto password:', password);
+            
+
+            if (text === '' || password === '') {
+                alert('Por favor, ingrese un texto válido.');
+                return; // Evitar el envío del formulario si el texto está vacío
+            }
 
             // Realizar la solicitud POST al backend
             fetch('/guardarTexto', {
@@ -29,7 +71,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ text: text })
+                body: JSON.stringify({ text: text , password: password})
             })
             .then(response => {
                 if (!response.ok) {
@@ -39,11 +81,11 @@
             })
             .then(data => {
                 // Manejar la respuesta del backend
-                document.getElementById('response').innerText = data.message;
+                renderImage(data.url, data.psw);
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
-            });
+            })
         });
     </script>
 </body>
